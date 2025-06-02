@@ -1,0 +1,83 @@
+#include <iostream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+// Recursiva: calcula o fatorial de um número
+int fatorial(int n) {
+    if (n <= 1) return 1;
+    return n * fatorial(n - 1);
+}
+
+// Gera senha aleatória
+string gerarSenha(int comprimento) {
+    string caracteres = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890,.!<>+/-&{}#";
+    string senha = "";
+
+    for (int i = 0; i < comprimento; i++) {
+        int indice = rand() % caracteres.length();
+        senha += caracteres[indice];
+    }
+
+    return senha;
+}
+
+// Exibe senhas armazenadas na matriz
+void exibirMatriz(string matriz[3][10], int quantidade, int tipo) {
+    cout << "\nSenhas geradas:\n";
+    for (int i = 0; i < quantidade; i++) {
+        cout << matriz[tipo][i] << endl;
+    }
+}
+
+int main() {
+    srand(time(0));
+    int opcao, quantidade;
+
+    cout << "Escolha o tipo de senha:\n";
+    cout << "1 - Fraca (5 caracteres)\n";
+    cout << "2 - Média (10 caracteres)\n";
+    cout << "3 - Forte (15 caracteres)\n";
+    cout << "Digite a opção: ";
+    cin >> opcao;
+
+    if (opcao < 1 || opcao > 3) {
+        cout << "Opção inválida.\n";
+        return 1;
+    }
+
+    cout << "Quantas senhas deseja gerar (máx 10)? ";
+    cin >> quantidade;
+
+    if (quantidade < 1 || quantidade > 10) {
+        cout << "Quantidade inválida.\n";
+        return 1;
+    }
+
+    int tamanho = 0;
+    string tipoTexto;
+    switch (opcao) {
+        case 1: tamanho = 5; tipoTexto = "Fracas"; break;
+        case 2: tamanho = 10; tipoTexto = "Médias"; break;
+        case 3: tamanho = 15; tipoTexto = "Fortes"; break;
+    }
+
+    vector<string> senhas;
+    string matriz[3][10];
+
+    for (int i = 0; i < quantidade; i++) {
+        string senha = gerarSenha(tamanho);
+        senhas.push_back(senha);
+        matriz[opcao - 1][i] = senha;
+    }
+
+    cout << "\nTipo de senha: " << tipoTexto << "\n";
+    exibirMatriz(matriz, quantidade, opcao - 1);
+
+    // Agora a recursão tem finalidade: estimar possibilidades únicas com caracteres distintos
+    cout << "\nPossibilidades únicas com " << tamanho << " caracteres diferentes: ";
+    cout << fatorial(tamanho) << " combinações (sem repetição)\n";
+
+    return 0;
+}
